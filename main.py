@@ -1,29 +1,33 @@
 import secrets
 import string
 
-safe_special_characters = "!@#$%^&*-_=+" # caractères sécurisés
+SAFE_SPECIAL_CHARACTERS = "!@#$%^&*-_=+"  # caractères sécurisés
 
 def generate_password(length, has_uppercase, has_digits, has_special_characters):
-    password = "" # mot de passe généré
-    characters = string.ascii_lowercase # caractères disponibles
+    characters = string.ascii_lowercase  # toujours présent
+    password_chars = []  # on stocke dans une liste pour pouvoir mélanger
 
-    if has_uppercase: # si l'utilisateur veut des majuscules
+    # Ajout des catégories activées
+    if has_uppercase:
         characters += string.ascii_uppercase
-    if has_digits: # si l'utilisateur veut des chiffres
+        password_chars.append(secrets.choice(string.ascii_uppercase))
+    if has_digits:
         characters += string.digits
-    if has_special_characters: # si l'utilisateur veut des caractères spéciaux
-        characters += safe_special_characters
+        password_chars.append(secrets.choice(string.digits))
+    if has_special_characters:
+        characters += SAFE_SPECIAL_CHARACTERS
+        password_chars.append(secrets.choice(SAFE_SPECIAL_CHARACTERS))
 
-    for i in range(length): # génération du mot de passe
-        password += secrets.choice(characters)
-    
-    return password
+    # Compléter jusqu'à atteindre la longueur demandée
+    while len(password_chars) < length:
+        password_chars.append(secrets.choice(characters))
 
-print("voici votre mot de passe : ", generate_password(20, True, True, True)) # appel de la fonction
+    # Mélanger pour éviter un ordre prévisible
+    secrets.SystemRandom().shuffle(password_chars)
 
-
-
-
-
+    # Retourner en string
+    return ''.join(password_chars)
 
 
+# Exemple
+print("voici votre mot de passe : ", generate_password(20, True, True, True))
