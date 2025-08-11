@@ -2,7 +2,7 @@ import secrets
 import string
 
 def generate_password(length):
-    characters = string.ascii_lowercase + string.ascii_uppercase
+    characters = string.ascii_lowercase + string.ascii_uppercase + string.digits
     password = ""
 
     for i in range(length):
